@@ -1,0 +1,117 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Hind');
+@import 'colors';
+
+body {
+    margin: 0;
+}
+
+.container {
+    background-color: rgb(255, 255, 255);
+    color: $font-dark;
+    font-family: 'Hind', cursive;
+    font-size: 24px;
+}
+
+.container-inner {
+    margin: 50px auto;
+    max-width: 1600px;
+    min-width: 400px;
+    width: calc(100vw - 280px);
+}
+
+.header {
+    background-color: rgb(0, 0, 0);
+    color: $font-light;
+    height: 40px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+
+    .logo {
+        padding: 2px 7px;
+        cursor: pointer;
+    }
+}
+
+.footer {
+    background-color: black;
+    bottom: 0;
+    height: 30px;
+    position: fixed;
+    width: 100%;
+}
+
+.about {
+
+    padding: 50px 0;
+
+    .heading {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .text {
+        padding: 30px 0;
+    }
+}
+
+.input{
+    padding: 50px 0;
+
+    .notification {
+        
+        font-size: 20px;
+        padding: 11px 2px;
+
+        &.warning {
+            color: $warning-red;
+        }
+
+        &.confirm {
+            color: $confirm-green;
+        }
+
+    }
+
+    .breadcrumb-link {
+
+        &:active {
+            color: $grey;
+        }
+
+        &:hover {
+            color: $black;
+        }
+
+        &:visited {
+            color: $grey;
+        }
+
+        &:hover:visited {
+            color: $black;
+        }
+
+    }
+
+    .breadcrumb-div {
+        color: $grey;
+    }
+
+}
+
+.graph {
+    height: 400px;
+    width: 800px;
+    max-width: 1600px;
+    min-width: 400px;
+    width: calc(100vw - 280px);
+    padding: 20px;
+
+    .graph-text {
+        font-size: 16px;
+    }
+}
+
+
