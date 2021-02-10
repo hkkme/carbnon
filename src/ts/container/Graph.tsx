@@ -3,6 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 // utils
 import _ from 'lodash';
 
+// material ui
+import { CircularProgress } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from '../utils/theme';
+
 // store
 import { useDispatch, useSelector } from 'react-redux';
 import { setMakeCalc, updateConsumptionWeekStore } from '../store/reducer/input';
@@ -12,6 +17,7 @@ import ApiService from '../utils/apiService';
 
 // Json
 import regionsJson from '../../json/regions';
+import countriesJson from '../../json/countries';
 // import weekJson from '../../json/week';
 import mockConsumptionWeek from '../../json/mocks/mock.consumptionWeekGraph';
 
@@ -20,6 +26,10 @@ import * as d3 from 'd3';
 
 const Graph = (): JSX.Element => {
 
+    // graph loader
+
+    const [graphLoader, setGraphLoader] = useState(false);
+
     // dispatch
 
     const dispatch = useDispatch();
@@ -27,9 +37,7 @@ const Graph = (): JSX.Element => {
     // get carb data from carbon interface
 
     const makeCalc = useSelector((state: IInput) => state.input.makeCalc);
-    // avoid re-render on consumptionWeek change
     const consumptionWeek = useSelector((state: any) => (makeCalc && state.input.consumptionWeek));
-    // console.log('render graph');
 
     useEffect(() => {
 
@@ -47,9 +55,13 @@ const Graph = (): JSX.Element => {
             // remove later
 
             cloneConsumptionWeek = mockConsumptionWeek;
+            setGraphLoader(true);
 
-            dispatch(updateConsumptionWeekStore(cloneConsumptionWeek));
-            setGCarbReady(true);
+            setTimeout(() => {
+                dispatch(updateConsumptionWeekStore(cloneConsumptionWeek));
+                setGCarbReady(true);
+                setGraphLoader(false);
+            }, 1000);
 
             // ########## END MOCK ##########
 
@@ -81,11 +93,13 @@ const Graph = (): JSX.Element => {
                     state,
                 };
 
+                setGraphLoader(true);
+
                 ApiService.requestPOST(url, data, headers)
                     .then((res: IresRequestPOST): void => {
 
                         if (!res) {
-                            // handle error
+                            // TBD: handel err
                         }
 
                         cloneConsumptionWeek.days[day]['gCarb'] = res.data.data.attributes.carbon_g;
@@ -93,13 +107,14 @@ const Graph = (): JSX.Element => {
                         if (count === 1) {
                             dispatch(updateConsumptionWeekStore(cloneConsumptionWeek));
                             setGCarbReady(true);
+                            setGraphLoader(false);
                         }
                         count--;
 
                     })
                     .catch((err: IresRequestPOST) => {
-                        // handel err
-                        console.log(err);
+                        // TBD: handel err
+                        console.error(err);
                     });
 
             });
@@ -146,9 +161,8 @@ const Graph = (): JSX.Element => {
         const width = 800;
         const height = 400;
 
-        // TBD: get from json
+        // TBD: use weekJson
         const week = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-        // console.log(weekJson);
 
         // svg
 
@@ -183,8 +197,20 @@ const Graph = (): JSX.Element => {
                 .attr('class', 'graph-text')
                 .attr('x', width/2)
                 .attr('y', 16)
-                .text(`Carbon emission in grams, ${regionsJson[consumptionWeek.country][consumptionWeek.region]}/${consumptionWeek.country}, 
-                average/day: ${average}, total/week: ${total} `);
+                .text(`
+                    Carbon emission in grams | ${regionsJson[consumptionWeek.country][consumptionWeek.region]}, ${countriesJson[consumptionWeek.country]} | 
+                    Ø/day: ${new Intl.NumberFormat('en-US').format(average)} | total/week: ${new Intl.NumberFormat('en-US').format(total)}
+                `);
+
+            // label top
+            svg.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('class', 'graph-text')
+                .attr('x', width/2)
+                .attr('y', 32)
+                .text(`
+                    Source: carboninterface.com | date: ${new Date().toLocaleDateString('en-US')}
+                `);
 
             // label bottom
             svg.append('text')
@@ -192,7 +218,23 @@ const Graph = (): JSX.Element => {
                 .attr('class', 'graph-text')
                 .attr('x', width/2)
                 .attr('y', height - 9)
-                .text(() => (carbonData.map((d: { [ key: string]: number }) => (` ${week[d.day-1]}: ${d.value}`))));
+                // TBD: fix: has comma (,) as default delimiter, but needs pipe (|)
+                // .text(
+                //     () => (
+                //         carbonData.map(
+                //             (d: { [ key: string]: number }) => (` ${week[d.day-1]}: ${new Intl.NumberFormat('en-US').format(d.value)}`)
+                //         )
+                //     )
+                // )
+                .text(`
+                    ${week[carbonData[0].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[0].value)} | 
+                    ${week[carbonData[1].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[1].value)} | 
+                    ${week[carbonData[2].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[2].value)} | 
+                    ${week[carbonData[3].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[3].value)} | 
+                    ${week[carbonData[4].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[4].value)} | 
+                    ${week[carbonData[5].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[5].value)} |
+                    ${week[carbonData[6].day-1]}: ${new Intl.NumberFormat('en-US').format(carbonData[6].value)}
+                `);
 
             // y axis
             const y = d3.scaleLinear()
@@ -222,6 +264,11 @@ const Graph = (): JSX.Element => {
 
     return (
         <div className='graph'>
+            <div className={`graph-loader ${graphLoader ? '' : 'hide'}`}>
+                <MuiThemeProvider theme={theme}>
+                    <CircularProgress color="primary" />
+                </MuiThemeProvider>
+            </div>
             <svg
                 ref={ref}
             />

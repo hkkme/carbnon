@@ -110,7 +110,15 @@ body {
     padding: 20px;
 
     .graph-text {
-        font-size: 16px;
+        font-size: 14px;
+    }
+
+    .graph-loader {
+        margin: 40px 0 0 100px;
+        font-size: 30px;
+        &.hide {
+            display: none;
+        }
     }
 }
 

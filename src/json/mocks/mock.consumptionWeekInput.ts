@@ -3,7 +3,7 @@ const consumptionWeek: any = {
     makeCalc: false,
     consumptionWeek: {
         country: 'CA',
-        region: 'QC',
+        region: 'BC',
         days: {
             mon: {
                 eVal: '3.5',

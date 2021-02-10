@@ -20,9 +20,19 @@ REACT_APP_MOCK_EMISSION_API=false
 ```
 
 ### todos
+- finish Typescript (lint warnigs, tidy types.d.ts)
 - handle API errors
-- preloader for graph
-- finish Typescript
+- write tests
+- review linter rules
+- use babel-plugin-root-import
+- graph fully responsive and resizable, media queries, etc.
+- energy saving theme (dark) and off switch with CTA: "Save energy now!"
+- regex for input vals: 4. > 4.0, 4.000 to 4.0
+- round input vals to 5 digits
+- missing weekdays not red when location is missing
+- use html-react-parser for texts
+- pdf download button for input-data and graph
+- add button to show graph as histogram and not curved
 - code splitting
-- create user loggin
-- tests
+- create user signup/login to save input-data and graph (e.g. on firebase)
+- SEO

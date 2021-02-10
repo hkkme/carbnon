@@ -1,6 +1,6 @@
 const consumptionWeek: any = {
     country: 'CA',
-    region: 'QC',
+    region: 'BC',
     days: {
         mon: {
             eVal: '3.5',

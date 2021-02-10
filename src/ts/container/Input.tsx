@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // import * as PropTypes from 'prop-types'
 
 // utils
@@ -63,6 +63,8 @@ const Input = (): JSX.Element => {
         type: '',
     });
 
+    const consumptionInput = useRef<any>(null);
+
     const newInput = (e: any): void => {
 
         dispatch(setMakeCalc(false));
@@ -89,6 +91,7 @@ const Input = (): JSX.Element => {
         } else if (inputId === 'day') {
 
             setDay(e.target.name);
+            consumptionInput.current.focus();
 
         } else if (inputId === 'consumption') {
 
@@ -271,16 +274,16 @@ const Input = (): JSX.Element => {
                                     const color = consumptionWeek.days[day] === undefined && calcClicked ? 'secondary' : 'primary';
 
                                     return <FormControlLabel
-                                        key={i}
-                                        value={day}
                                         control={<Radio
                                             color='primary'
                                             id='day'
                                             name={day}
                                         />}
+                                        color='primary'
+                                        key={i}
                                         label={<Typography color={color}>{dayShort}</Typography>}
                                         labelPlacement='bottom'
-                                        color='primary'
+                                        value={day}
                                     />;
                           
                                 })}
@@ -292,6 +295,7 @@ const Input = (): JSX.Element => {
                             <Grid item>
                                 <TextField
                                     id='consumption'
+                                    inputRef={consumptionInput}
                                     label='MWh'
                                     onChange={newInput}
                                     style={{ width: '250px'}}
@@ -308,9 +312,9 @@ const Input = (): JSX.Element => {
                         <Grid container justify='flex-start' spacing={3}>
                             <Grid item>
                                 <Button
-                                    variant='contained'
                                     color='primary'
                                     onClick={clickCalc}
+                                    variant='contained'
                                 >
                                     {texts['CALCBT'].text}
                                 </Button>

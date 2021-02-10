@@ -1,6 +1,6 @@
 import validator from '../ts/utils/validator';
 
-let testVals = ['1.1', '.1', '333,33333'];
+let testVals = ['0.165','.14',',003','0,333','0','11','5453.432'];
 
 testVals.map(val => {
     test(`validator ${val}`, () => {
@@ -9,7 +9,7 @@ testVals.map(val => {
     });
 })
 
-testVals = ['1a', '01.1', '-3333'];
+testVals = ['00677','1a','01.1','-3333','456%','12,234,44'];
 
 testVals.map(val => {
     test(`validator ${val}`, () => {
